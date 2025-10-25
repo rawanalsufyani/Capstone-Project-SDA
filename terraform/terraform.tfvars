@@ -14,3 +14,9 @@ node_count      = 2
 vm_size         = "Standard_DS2_v2"
 service_cidr    = "10.2.0.0/16"
 dns_service_ip  = "10.2.0.10"
+default_node_pool_name= "system-node-pool"
+user_node_pool_name = "user-node-pool"
+ingress_name ="ingress-ip"
+min_autoscaler = 2
+max_autoscaler = 4
+

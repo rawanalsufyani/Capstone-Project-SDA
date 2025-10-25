@@ -43,3 +43,25 @@ module "keyvault" {
   db_name            = var.db_name
 }
 
+module "ingress_ip"{
+    source = "./modules/ingress"
+    ingress_name = "${var.prefix}${var.ingress_name}"
+    rg_name = module.rg.name
+    rg_location = module.resource_group.rg_location
+}
+
+module "cluster"{
+    source = "./modules/azurerm_kubernetes_cluster"
+    prefix = var.prefix
+    rg_name = module.rg.name
+    rg_location = module.resource_group.rg_location
+    default_node_pool_name= "${var.prefix}${var.default_node_pool_name}"
+    user_node_pool_name = "${var.prefix}${var.user_node_pool_name}"
+    vm_size = var.vm_size
+    service_cidr = var.service_cidr
+    dns_service_ip = var.dns_service_ip
+    aks_node_count = var.node_count
+    min_autoscaler = var.min_autoscaler
+    max_autoscaler = var.max_autoscaler
+    aks_subnet_id = module.vent.aks_subnet_id
+}
