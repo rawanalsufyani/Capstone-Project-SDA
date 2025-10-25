@@ -1,0 +1,16 @@
+prefix             = "team5"
+rg_name            = "team5-rg"
+location           = "East US"
+subscription_id    = "80646857-9142-494b-90c5-32fea6acbc41"
+vnet_cidr          = "10.0.0.0/16"
+appgw_subnet_cidr  = "10.0.1.0/24"
+aks_subnet_cidr    = "10.0.2.0/24"
+data_pe_subnet_cidr = "10.0.3.0/24"
+db_name            = "team5-db"
+sql_admin_login    = "azure"
+sql_admin_password = "YourSecurePassword123!"
+
+node_count      = 2
+vm_size         = "Standard_DS2_v2"
+service_cidr    = "10.2.0.0/16"
+dns_service_ip  = "10.2.0.10"
