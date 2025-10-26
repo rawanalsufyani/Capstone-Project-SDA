@@ -32,18 +32,14 @@ resource "azurerm_private_endpoint" "sql_pe" {
     subresource_names              = ["sqlServer"]
     is_manual_connection           = false
   }
+
+    private_dns_zone_group {
+    name                 = "sql-dns-zone-group"
+    private_dns_zone_ids = [var.sql_private_dns_zone_id]
+  }
+
+depends_on = [azurerm_mssql_database.sql_db]
 }
 
 
-resource "azurerm_private_dns_zone" "sql_zone" {
-  name                = "privatelink.database.windows.net"
-  resource_group_name = var.rg_name
-}
 
-
-resource "azurerm_private_dns_zone_virtual_network_link" "sql_link" {
-  name                  = "${var.prefix}-sql-vnet-link"
-  resource_group_name   = var.rg_name
-  private_dns_zone_name = azurerm_private_dns_zone.sql_zone.name
-  virtual_network_id    = var.vnet_id 
-}

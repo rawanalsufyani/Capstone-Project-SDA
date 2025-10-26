@@ -25,6 +25,8 @@ module "sql" {
   vnet_id                  = module.vent.vnet_id
   data_pe_subnet_id       = module.vent.data_pe_subnet_id
   sql_private_dns_zone_id = module.vent.sql_private_dns_zone_id
+
+    depends_on = [module.vent]
 }
 
 #module "keyvault" {
@@ -63,7 +65,7 @@ module "cluster"{
     prefix = var.prefix
     rg_name = module.rg.name
     rg_location = module.rg.location
-    default_node_pool_name= "${var.prefix}${var.default_node_pool_name}"
+    default_node_pool_name= var.default_node_pool_name
     user_node_pool_name = "${var.prefix}${var.user_node_pool_name}"
     vm_size = var.vm_size
     service_cidr = var.service_cidr
