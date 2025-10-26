@@ -27,21 +27,21 @@ variable "ingress_name"{type =string}
 variable "min_autoscaler" {type = number}
 variable "max_autoscaler" {type = number}
 
-variable "client_id" {
-  type        = string
-  description = "Client ID of the Service Principal used by CI/CD"
-}
+#variable "client_id" {
+  #type        = string
+  #description = "Client ID of the Service Principal used by CI/CD"
+#}
 
-variable "client_secret" {
-  type        = string
-  description = "Client Secret of the Service Principal used by CI/CD"
-  sensitive   = true
-}
+#variable "client_secret" {
+ # type        = string
+  #description = "Client Secret of the Service Principal used by CI/CD"
+  #sensitive   = true
+#}
 
-variable "tenant_id" {
-  type        = string
-  description = "Tenant ID of the Service Principal"
-}
+#variable "tenant_id" {
+ # type        = string
+#  description = "Tenant ID of the Service Principal"
+#}
 
 
 variable "dockerhub_username" {
@@ -50,3 +50,7 @@ variable "dockerhub_username" {
 variable "dockerhub_token" {
   type        = string
 }
+
+variable "container_name" {}
+variable "key" {}
+variable "storage_account_name" {}

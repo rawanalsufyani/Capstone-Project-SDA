@@ -35,13 +35,15 @@ resource "azurerm_private_endpoint" "sql_pe" {
 }
 
 
-resource "azurerm_private_dns_zone_group" "sql_pe_dns" {
-  name                 = "sql-pe-dns-group"
-  private_endpoint_id  = azurerm_private_endpoint.sql_pe.id
-
-  private_dns_zone_configs {
-    name                  = "sql-zone"
-    private_dns_zone_id   = var.sql_private_dns_zone_id
-  }
+resource "azurerm_private_dns_zone" "sql_zone" {
+  name                = "privatelink.database.windows.net"
+  resource_group_name = var.rg_name
 }
 
+
+resource "azurerm_private_dns_zone_virtual_network_link" "sql_link" {
+  name                  = "${var.prefix}-sql-vnet-link"
+  resource_group_name   = var.rg_name
+  private_dns_zone_name = azurerm_private_dns_zone.sql_zone.name
+  virtual_network_id    = var.vnet_id 
+}

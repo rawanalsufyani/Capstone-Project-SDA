@@ -12,12 +12,12 @@ variable "rg_location" {
 
 variable "allocation_method" {
   type = string
-  default = "static"
+  default = "Static"
 }
 
 variable "sku" {
     type = string
-    default = "standard"
+    default = "Standard"
   
 }
 

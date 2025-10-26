@@ -1,5 +1,5 @@
 module "rg" {
-  source   = "./modules/resource_group"
+  source   = "./modules/rg"
   rg_name  = var.rg_name
   location = var.location
 }
@@ -22,7 +22,7 @@ module "sql" {
   db_name                 = var.db_name
   sql_admin_login         = var.sql_admin_login
   sql_admin_password      = var.sql_admin_password
-
+  vnet_id                  = module.vent.vnet_id
   data_pe_subnet_id       = module.vent.data_pe_subnet_id
   sql_private_dns_zone_id = module.vent.sql_private_dns_zone_id
 }

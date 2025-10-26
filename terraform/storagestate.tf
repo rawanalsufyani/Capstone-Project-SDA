@@ -4,7 +4,7 @@ resource "azurerm_resource_group" "team5_tfstate" {
 }
 
 resource "azurerm_storage_account" "tfstate_acc" {
-  name                     = "tfstateftoon"
+  name                     = "tfstateteam5"
   resource_group_name      = azurerm_resource_group.team5_tfstate.name
   location                 = azurerm_resource_group.team5_tfstate.location
   account_tier             = "Standard"
