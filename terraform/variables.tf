@@ -26,3 +26,27 @@ variable "user_node_pool_name" {type = string}
 variable "ingress_name"{type =string}
 variable "min_autoscaler" {type = number}
 variable "max_autoscaler" {type = number}
+
+variable "client_id" {
+  type        = string
+  description = "Client ID of the Service Principal used by CI/CD"
+}
+
+variable "client_secret" {
+  type        = string
+  description = "Client Secret of the Service Principal used by CI/CD"
+  sensitive   = true
+}
+
+variable "tenant_id" {
+  type        = string
+  description = "Tenant ID of the Service Principal"
+}
+
+
+variable "dockerhub_username" {
+  type        = string
+}
+variable "dockerhub_token" {
+  type        = string
+}

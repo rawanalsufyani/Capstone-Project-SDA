@@ -18,9 +18,7 @@ variable "aks_subnet_cidr" {
   type = string
 }
 
-variable "appgw_subnet_cidr" {
-  type = string
-}
+
 
 variable "data_pe_subnet_cidr" {
   type = string

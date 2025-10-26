@@ -9,7 +9,6 @@ data_pe_subnet_cidr = "10.0.3.0/24"
 db_name            = "team5-db"
 sql_admin_login    = "azure"
 sql_admin_password = "YourSecurePassword123!"
-
 node_count      = 2
 vm_size         = "Standard_DS2_v2"
 service_cidr    = "10.2.0.0/16"
@@ -19,4 +18,8 @@ user_node_pool_name = "user-node-pool"
 ingress_name ="ingress-ip"
 min_autoscaler = 2
 max_autoscaler = 4
-
+#client_id        = "YOUR_APP_CLIENT_ID"
+#client_secret    = "YOUR_APP_CLIENT_SECRET"
+#tenant_id        =  "YOUR_TENANT_ID"
+dockerhub_username = "placeholder-user"
+dockerhub_token    = "placeholder-token"

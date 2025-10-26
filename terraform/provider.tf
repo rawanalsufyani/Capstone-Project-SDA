@@ -6,9 +6,9 @@ terraform {
     }
   }
    backend "azurerm" {
-    # resource_group_name  = "devops-project3-storageaccount"
-    # storage_account_name = "devopsweekstorage1006"
-    # container_name       = "terraformstate"
+    # resource_group_name  = "tfstate-rg-team5"
+    # storage_account_name = "tfstateftoon"
+    # container_name       = "tfstate"
     # key                  = "terraform.tfstate"
     //will be known after creation
 }
