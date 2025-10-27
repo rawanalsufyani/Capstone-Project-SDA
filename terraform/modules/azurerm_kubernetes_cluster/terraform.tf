@@ -1,53 +1,37 @@
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = "${var.prefix}-aks-cluster"
-  location            = var.rg_location
-  resource_group_name = var.rg_name
-  dns_prefix          = "${var.prefix}-dns"
-  node_resource_group = "${var.prefix}-aks-node"
+  name                = var.name
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  dns_prefix          = var.dns_prefix
 
-  # System (default) node pool
+  node_resource_group = var.node_resource_group_name
+
   default_node_pool {
-    name                = var.default_node_pool_name
-    type                = "VirtualMachineScaleSets"  
-    node_count = var.aks_node_count
-    vm_size             = var.vm_size
-    vnet_subnet_id      = var.aks_subnet_id
-
-    auto_scaling_enabled = true                
-    min_count           = var.min_autoscaler
-    max_count           = var.max_autoscaler
+    name       = var.default_node_pool_name
+    node_count = var.node_count
+    vm_size    = var.vm_size
+   type       = "VirtualMachineScaleSets"
+    vnet_subnet_id = var.vnet_subnet_id
+    temporary_name_for_rotation = "temprotate"
 
   }
-
   network_profile {
-    network_plugin = "azure"
-    service_cidr   = var.service_cidr
-    dns_service_ip = var.dns_service_ip
-    outbound_type  = "loadBalancer"               
+  network_plugin = "azure"
+  service_cidr   = "10.240.0.0/16"   # <-- changed to non-overlapping range
+  dns_service_ip = "10.240.0.10"     # <-- must be within service_cidr
+  outbound_type  = "loadBalancer"
+}
+
+  identity {
+    type = var.identity_type
   }
 
-  identity { type = "SystemAssigned" }
-
-  oidc_issuer_enabled               = true
-  workload_identity_enabled         = true
-  role_based_access_control_enabled = true
-
+  # Lifecycle rule to ignore changes to key_vault_secrets_provider
+  # This prevents Terraform from trying to remove the add-on when it's managed outside Terraform
+  lifecycle {
+    ignore_changes = [
+      key_vault_secrets_provider,
+      default_node_pool[0].upgrade_settings
+    ]
+  }
 }
-
-# User pool 
-resource "azurerm_kubernetes_cluster_node_pool" "user_node_pool" {
-  name                  = var.user_node_pool_name   
-  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
-  mode                  = "User"                     
-  vm_size               = var.vm_size
-  vnet_subnet_id        = var.aks_subnet_id
-
-  auto_scaling_enabled = true            
-  min_count             = var.min_autoscaler
-  max_count             = var.max_autoscaler
-
-
-  tags = { Environment = "Production" }
-}
-
-

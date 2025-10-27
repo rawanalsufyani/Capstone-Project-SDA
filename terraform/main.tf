@@ -60,19 +60,27 @@ module "ingress_ip"{
     rg_location = module.rg.location
 }
 
-module "cluster"{
-    source = "./modules/azurerm_kubernetes_cluster"
-    prefix = var.prefix
-    rg_name = module.rg.name
-    rg_location = module.rg.location
-    default_node_pool_name= var.default_node_pool_name
-    user_node_pool_name = "${var.prefix}${var.user_node_pool_name}"
-    vm_size = var.vm_size
-    service_cidr = var.service_cidr
-    dns_service_ip = var.dns_service_ip
-    aks_node_count = var.node_count
-    min_autoscaler = var.min_autoscaler
-    max_autoscaler = var.max_autoscaler
-    aks_subnet_id = module.vent.aks_subnet_id
-}
 
+
+
+module "aks" {
+
+  source =  "./modules/azurerm_kubernetes_cluster"
+
+  name = "${var.prefix}-aks"
+
+  resource_group_name = module.rg.name
+
+  location = module.rg.location
+
+  dns_prefix = "${var.prefix}-dns"
+
+  vnet_subnet_id = module.vent.aks_subnet_id
+
+  identity_type = "SystemAssigned"
+
+  node_resource_group_name = "${var.prefix}-aks"
+
+  default_node_pool_name = "systempool"
+
+}
