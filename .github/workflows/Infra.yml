@@ -13,7 +13,7 @@ jobs:
   terraform:
     name: Terraform Pipeline
     runs-on: ubuntu-latest
-    environment: dev   # <-- هنا ضروري لأن القيم محفوظة في env:dev
+    environment: dev   
     defaults:
       run:
         working-directory: terraform
@@ -25,12 +25,14 @@ jobs:
       - name: Azure Login (Service Principal)
         uses: azure/login@v2
         with:
-          auth-type: SERVICE_PRINCIPAL
-          client-id: ${{ secrets.ARM_CLIENT_ID }}
-          tenant-id: ${{ secrets.ARM_TENANT_ID }}
-          client-secret: ${{ secrets.ARM_CLIENT_SECRET }}
-          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          environment: azurecloud
+         creds: |
+          {
+           "clientId": "${{ secrets.ARM_CLIENT_ID }}",
+           "clientSecret": "${{ secrets.ARM_CLIENT_SECRET }}",
+           "subscriptionId": "${{ secrets.ARM_SUBSCRIPTION_ID }}",
+           "tenantId": "${{ secrets.ARM_TENANT_ID }}"
+          }
+          
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
