@@ -30,3 +30,4 @@ variable "data_pe_subnet_id" {
 variable "sql_private_dns_zone_id" {
   type = string
 }
+variable "vnet_id"  {   type = string}

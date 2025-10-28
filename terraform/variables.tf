@@ -19,4 +19,38 @@ variable "vm_size" { default = "Standard_DS2_v2" }
 variable "service_cidr" { default = "10.2.0.0/16" }
 variable "dns_service_ip" { default = "10.2.0.10" }
 variable "subscription_id" {type = string}
-  
+
+variable "user_node_pool_name" {type = string}
+
+
+variable "ingress_name"{type =string}
+variable "min_autoscaler" {type = number}
+variable "max_autoscaler" {type = number}
+
+#variable "client_id" {
+  #type        = string
+  #description = "Client ID of the Service Principal used by CI/CD"
+#}
+
+#variable "client_secret" {
+ # type        = string
+  #description = "Client Secret of the Service Principal used by CI/CD"
+  #sensitive   = true
+#}
+
+#variable "tenant_id" {
+ # type        = string
+#  description = "Tenant ID of the Service Principal"
+#}
+
+
+variable "dockerhub_username" {
+  type        = string
+}
+variable "dockerhub_token" {
+  type        = string
+}
+
+variable "container_name" {}
+variable "key" {}
+variable "storage_account_name" {}

@@ -27,3 +27,19 @@ yarn-error.log*
 **/**/*.tfstate
 **/**/target/
 
+
+# Terraform secrets
+*.tfvars
+*.auto.tfvars
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Terraform secrets
+*.tfvars
+*.auto.tfvars
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl

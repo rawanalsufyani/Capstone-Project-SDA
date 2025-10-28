@@ -33,8 +33,13 @@ resource "azurerm_private_endpoint" "sql_pe" {
     is_manual_connection           = false
   }
 
-  private_dns_zone_group {
+    private_dns_zone_group {
     name                 = "sql-dns-zone-group"
     private_dns_zone_ids = [var.sql_private_dns_zone_id]
   }
+
+depends_on = [azurerm_mssql_database.sql_db]
 }
+
+
+

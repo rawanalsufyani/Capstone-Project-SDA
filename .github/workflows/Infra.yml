@@ -1,40 +1,31 @@
-name: Terraform CI/CD Pipeline
-
-on:
-  push:
-    branches:
-      - terraform-infra-ftoon
+name: Terraform Pipeline
+      - terraform-infra-testing
   pull_request:
     branches:
-      - terraform-infra-ftoon
+      - terraform-infra-testing
   workflow_dispatch:
 
 jobs:
   terraform:
     name: Terraform Pipeline
     runs-on: ubuntu-latest
-
-    strategy:
-     matrix:
-      module: [rg, vnet, sql, keyvault]
-
     defaults:
       run:
-        working-directory: terraform/modules/${{ matrix.module }}
+        working-directory: terraform
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Azure Login (Service Principal)
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: latest
+          terraform_version: 1.7.3  
 
       - name: Terraform Init
         run: terraform init
@@ -42,27 +33,18 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Import RG (only for rg module)
-        if: matrix.module == 'rg'
+      - name: Terraform Import RG
         run: |
-          terraform import azurerm_resource_group.rg /subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg || echo "RG already managed"
+          terraform import -var="location=East US" module.rg.azurerm_resource_group.this "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg" || echo "RG already managed"
 
-      - name: Terraform Import VNet (only for vnet module)
-        if: matrix.module == 'vnet'
+      - name: Terraform Import VNet
         run: |
-          terraform import azurerm_virtual_network.vnet "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Network/virtualNetworks/team5-vnet" || echo "VNet already managed"
+          terraform import -var="location=East US" module.vnet.azurerm_virtual_network.this "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Network/virtualNetworks/team5-vnet" || echo "VNet already managed"
 
-   
-      - name: Terraform Import SQL (only for sql module)
-        if: matrix.module == 'sql'
+      - name: Terraform Import SQL
         run: |
-          terraform import azurerm_mssql_server.sql "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Sql/servers/team5-sqlserver" || echo "SQL Server already managed"
+          terraform import -var="location=East US" module.sql.azurerm_mssql_server.this "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Sql/servers/team5-sqlserver" || echo "SQL Server already managed"
 
-      
-      - name: Terraform Import KeyVault (only for keyvault module)
-        if: matrix.module == 'keyvault'
-        run: |
-          terraform import azurerm_key_vault.kv "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.KeyVault/vaults/team5-kv" || echo "KeyVault already managed"
 
       - name: Terraform Plan
         run: terraform plan
@@ -70,4 +52,3 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         run: terraform apply -auto-approve
-#
