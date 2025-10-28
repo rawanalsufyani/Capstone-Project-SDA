@@ -7,8 +7,8 @@ resource "azurerm_key_vault" "kv" {
   tenant_id                    = data.azurerm_client_config.current.tenant_id
   sku_name                     = "standard"
 
-  enable_rbac_authorization     = true
-  purge_protection_enabled      = true
+  rbac_authorization_enabled   = true
+  purge_protection_enabled     = true
   public_network_access_enabled = false
 }
 
@@ -24,18 +24,13 @@ resource "azurerm_private_endpoint" "kv_pe" {
     subresource_names              = ["vault"]
     is_manual_connection           = false
   }
-}
 
-resource "azurerm_private_dns_zone_group" "kv_pe_dns" {
-  name                = "kv-pe-dns-group"
-  private_endpoint_id = azurerm_private_endpoint.kv_pe.id
-
-  private_dns_zone_configs {
-    name                = "kv-zone"
-    private_dns_zone_id = var.kv_private_dns_zone_id 
+ 
+  private_dns_zone_group {
+    name                 = "kv-dns-zone-group"
+    private_dns_zone_ids = [var.kv_private_dns_zone_id]
   }
 }
-
 
 resource "azurerm_key_vault_secret" "sql_admin_login" {
   name         = "sql-admin-login"
