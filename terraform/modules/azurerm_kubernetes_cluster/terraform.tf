@@ -8,7 +8,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   default_node_pool {
     name       = var.default_node_pool_name
-    node_count = var.node_count
+    #node_count = var.node_count
+  auto_scaling_enabled = true
+  min_count             = 1
+  max_count             = 3
     vm_size    = var.vm_size
    type       = "VirtualMachineScaleSets"
     vnet_subnet_id = var.vnet_subnet_id
@@ -33,5 +36,20 @@ resource "azurerm_kubernetes_cluster" "aks" {
       key_vault_secrets_provider,
       default_node_pool[0].upgrade_settings
     ]
+  }
+}
+resource "azurerm_kubernetes_cluster_node_pool" "user_node_pool" {
+  name                  = "usernode"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
+  mode                  = "User"  
+  vm_size               = var.vm_size
+  os_sku                = "Ubuntu"
+ auto_scaling_enabled = true
+  min_count             = 2
+  max_count             = 3
+  vnet_subnet_id = var.vnet_subnet_id
+  node_labels           = { pool = "user" }  
+  tags = {
+    Environment = "Production"
   }
 }

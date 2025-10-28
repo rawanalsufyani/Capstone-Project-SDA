@@ -6,12 +6,13 @@ terraform {
     }
   }
    backend "azurerm" {
-    resource_group_name  = "tfstate-rg-team5"
-    storage_account_name = "tfstateteam5"
-    container_name       = "tfstate"
-     key                  = "terraform.tfstate"
-    //will be known after creation
-}
+    resource_group_name  = "team5-state-storage"
+    storage_account_name = "storageaccjudeb4da5f92bc"
+    container_name       = "terraformstate725f72d5cb"
+    key                  = "terraform.tfstate"
+
+} 
+
 }
 provider "azurerm" {
   features {
