@@ -30,7 +30,7 @@ jobs:
       - name: Azure Login (Service Principal)
         uses: azure/login@v2
         with:
-         auth-type: service-principal
+         auth-type: SERVICE_PRINCIPAL
 
  
       - name: Setup Terraform
