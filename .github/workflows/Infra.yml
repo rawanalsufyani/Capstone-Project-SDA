@@ -47,12 +47,6 @@ jobs:
         run: |
           terraform import azurerm_resource_group.rg /subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg || echo "RG already managed"
 
-      - name: Terraform Import RG (only for rg module)
-        if: matrix.module == 'rg'
-        run: |
-          terraform import azurerm_resource_group.rg /subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg || echo "RG already managed"
-
-      
       - name: Terraform Import VNet (only for vnet module)
         if: matrix.module == 'vnet'
         run: |
