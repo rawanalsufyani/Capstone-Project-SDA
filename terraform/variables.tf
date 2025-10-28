@@ -51,6 +51,8 @@ variable "dockerhub_token" {
   type        = string
 }
 
-variable "container_name" {}
-variable "key" {}
-variable "storage_account_name" {}
+variable "ingress_dns_label" {
+  description = "The DNS label for the Ingress Public IP. Optional, defaults to prefix-ingress."
+  type        = string
+  default     = null 
+}

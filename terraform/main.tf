@@ -55,9 +55,11 @@ module "sql" {
 
 module "ingress_ip"{
     source = "./modules/ingress"
+      prefix                  = var.prefix
     ingress_name = "${var.prefix}${var.ingress_name}"
     rg_name = module.rg.name
     rg_location = module.rg.location
+    ingress_dns_label = coalesce(var.ingress_dns_label, "${var.prefix}-ingress")
 }
 
 

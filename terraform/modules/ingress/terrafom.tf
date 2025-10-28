@@ -4,5 +4,5 @@ resource "azurerm_public_ip" "ingress_ip" {
     location = var.rg_location
     allocation_method = var.allocation_method
     sku = var.sku
-  
+    domain_name_label   = var.ingress_dns_label
 }

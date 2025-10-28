@@ -1,4 +1,7 @@
 
+variable "prefix" {
+  type = string
+}
 
 variable "rg_name" {
   type = string
@@ -24,4 +27,8 @@ variable "sku" {
 variable "ingress_name" {
   type = string 
   description = "ingress ip name"
+}
+variable "ingress_dns_label" {
+  type = string 
+  description = "public ip domain"
 }
