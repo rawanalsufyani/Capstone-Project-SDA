@@ -12,14 +12,14 @@ resource "azurerm_mssql_server" "sql_server" {
 
 # 2) SQL Database
 resource "azurerm_mssql_database" "sql_db" {
-  name                = var.db_name
-  server_id           = azurerm_mssql_server.sql_server.id
-  sku_name            = "Basic"
+  name                 = var.db_name
+  server_id            = azurerm_mssql_server.sql_server.id
+  sku_name             = "Basic"
   storage_account_type = "Zone"
-  max_size_gb         = 2
+  max_size_gb          = 2
 }
 
-# 3) Private Endpoint
+# 3) Private Endpoint 
 resource "azurerm_private_endpoint" "sql_pe" {
   name                = "${var.prefix}-sql-pe"
   location            = var.location
@@ -32,16 +32,9 @@ resource "azurerm_private_endpoint" "sql_pe" {
     subresource_names              = ["sqlServer"]
     is_manual_connection           = false
   }
-}
 
-
-resource "azurerm_private_dns_zone_group" "sql_pe_dns" {
-  name                 = "sql-pe-dns-group"
-  private_endpoint_id  = azurerm_private_endpoint.sql_pe.id
-
-  private_dns_zone_configs {
-    name                  = "sql-zone"
-    private_dns_zone_id   = var.sql_private_dns_zone_id
+  private_dns_zone_group {
+    name                 = "sql-dns-zone-group"
+    private_dns_zone_ids = [var.sql_private_dns_zone_id]
   }
 }
-
