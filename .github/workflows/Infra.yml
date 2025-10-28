@@ -1,0 +1,73 @@
+name: Terraform CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - terraform-infra-ftoon
+  pull_request:
+    branches:
+      - terraform-infra-ftoon
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    name: Terraform Pipeline
+    runs-on: ubuntu-latest
+
+    strategy:
+     matrix:
+      module: [rg, vnet, sql, keyvault]
+
+    defaults:
+      run:
+        working-directory: terraform/modules/${{ matrix.module }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login (Service Principal)
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Import RG (only for rg module)
+        if: matrix.module == 'rg'
+        run: |
+          terraform import azurerm_resource_group.rg /subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg || echo "RG already managed"
+
+      - name: Terraform Import VNet (only for vnet module)
+        if: matrix.module == 'vnet'
+        run: |
+          terraform import azurerm_virtual_network.vnet "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Network/virtualNetworks/team5-vnet" || echo "VNet already managed"
+
+   
+      - name: Terraform Import SQL (only for sql module)
+        if: matrix.module == 'sql'
+        run: |
+          terraform import azurerm_mssql_server.sql "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Sql/servers/team5-sqlserver" || echo "SQL Server already managed"
+
+      
+      - name: Terraform Import KeyVault (only for keyvault module)
+        if: matrix.module == 'keyvault'
+        run: |
+          terraform import azurerm_key_vault.kv "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.KeyVault/vaults/team5-kv" || echo "KeyVault already managed"
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        run: terraform apply -auto-approve
+#
