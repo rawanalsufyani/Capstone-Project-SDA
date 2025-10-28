@@ -9,9 +9,6 @@ on:
       - terraform-infra-testing
   workflow_dispatch:
   
-permissions:
-  id-token: write
-  contents: read
   
 env: 
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -40,9 +37,6 @@ jobs:
          tenant-id: ${{ secrets.ARM_TENANT_ID }}
          client-secret: ${{ secrets.ARM_CLIENT_SECRET }}
          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-         enable-AzPSSession: false
-         environment: azurecloud
-
 
  
       - name: Setup Terraform
