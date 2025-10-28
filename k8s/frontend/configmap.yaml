@@ -4,4 +4,36 @@ metadata:
   name: frontend-config
   namespace: app-prod
 data:
-  VITE_API_BASE_URL: "http://api.team5.sda.aks"
+  VITE_API_BASE_URL: "http://70.153.85.230/api"
+
+  nginx.conf: |
+    worker_processes  1;
+
+    events { worker_connections 1024; }
+
+    http {
+      include       mime.types;
+      default_type  application/octet-stream;
+      sendfile        on;
+      keepalive_timeout  65;
+
+      server {
+        listen 80;
+        server_name _;
+
+        root /usr/share/nginx/html;
+        index index.html;
+
+        location /assets/ {
+          try_files $uri =404;
+        }
+
+        location /api/ {
+          return 404;
+        }
+
+        location / {
+          try_files $uri $uri/ /index.html;
+        }
+      }
+    }

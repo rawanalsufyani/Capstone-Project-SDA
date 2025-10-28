@@ -14,10 +14,21 @@ spec:
         app: frontend
     spec:
       containers:
-      - name: frontend
-        image: xdn73/frontend:v3
-        ports:
-        - containerPort: 80
-        envFrom:
-        - configMapRef:
+        - name: frontend
+          image: xdn73/frontend:v3
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: frontend-config
+          volumeMounts:
+            - name: nginx-conf-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-conf-volume
+          configMap:
             name: frontend-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
