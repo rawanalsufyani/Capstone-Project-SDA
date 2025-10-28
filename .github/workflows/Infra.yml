@@ -36,7 +36,7 @@ jobs:
          client-secret: ${{ secrets.ARM_CLIENT_SECRET }}
          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
          enable-AzPSSession: false
-         environment: dev
+         environment: azurecloud
 
 
  
