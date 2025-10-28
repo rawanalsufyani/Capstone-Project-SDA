@@ -1,8 +1,4 @@
 name: Terraform Pipeline
-
-on:
-  push:
-    branches:
       - terraform-infra-testing
   pull_request:
     branches:

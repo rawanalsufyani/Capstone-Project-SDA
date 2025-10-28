@@ -12,14 +12,14 @@ resource "azurerm_mssql_server" "sql_server" {
 
 # 2) SQL Database
 resource "azurerm_mssql_database" "sql_db" {
-  name                = var.db_name
-  server_id           = azurerm_mssql_server.sql_server.id
-  sku_name            = "Basic"
+  name                 = var.db_name
+  server_id            = azurerm_mssql_server.sql_server.id
+  sku_name             = "Basic"
   storage_account_type = "Zone"
-  max_size_gb         = 2
+  max_size_gb          = 2
 }
 
-# 3) Private Endpoint
+# 3) Private Endpoint 
 resource "azurerm_private_endpoint" "sql_pe" {
   name                = "${var.prefix}-sql-pe"
   location            = var.location
