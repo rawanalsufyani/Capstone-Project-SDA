@@ -44,8 +44,16 @@ jobs:
 
       - name: Terraform Import RG (only for rg module)
         if: matrix.module == 'rg'
+        env:
+         TF_LOG: DEBUG
+         TF_LOG_PATH: terraform-debug.log
+         TF_INPUT: false
         run: |
-          terraform import azurerm_resource_group.rg /subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg || echo "RG already managed"
+         echo ">>> Starting Terraform Import for Resource Group..."
+         terraform import -var="location=Indonesia Central" azurerm_resource_group.rg /subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg || echo "RG already managed"
+         echo ">>> Terraform Import Completed"
+         timeout 180s terraform plan || echo "Terraform plan timed out or completed."
+         cat terraform-debug.log || echo "No debug logs found."
 
       - name: Terraform Import VNet (only for vnet module)
         if: matrix.module == 'vnet'
