@@ -1,4 +1,3 @@
-# frontend-deployment.yaml المعدل
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,7 +13,6 @@ spec:
       labels:
         app: frontend
     spec:
-      # add Node Selector to be only in usernode not system
       nodeSelector:
         agentpool: usernode
       containers:
@@ -25,3 +23,23 @@ spec:
         envFrom:
         - configMapRef:
             name: frontend-config
+
+        # 👇 mount nginx config from same ConfigMap
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+
+      # 👇 volume definition (same ConfigMap)
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: frontend-config

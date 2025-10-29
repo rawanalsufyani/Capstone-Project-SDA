@@ -5,3 +5,18 @@ metadata:
   namespace: app-prod
 data:
   VITE_API_BASE_URL: "http://team5-ingress.indonesiacentral.cloudapp.azure.com/api"
+
+  # 👇 NGINX config to fix 404 on refresh and proxy /api to backend
+  default.conf: |
+    server {
+      listen 80;
+      root /usr/share/nginx/html;
+
+      location / {
+        try_files $uri /index.html;
+      }
+
+      location /api/ {
+        proxy_pass http://backend-svc:8080/;
+      }
+    }
