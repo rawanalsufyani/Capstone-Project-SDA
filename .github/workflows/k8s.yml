@@ -85,16 +85,8 @@ jobs:
           kubectl rollout status deployment/backend -n ${{ env.NAMESPACE }} --timeout=300s
           kubectl rollout status deployment/frontend -n ${{ env.NAMESPACE }} --timeout=300s
 
-      # 🔟 Deploy Monitoring (Prometheus + Grafana)
-      - name: Deploy Monitoring
-        run: |
-          kubectl apply -f k8s/monitoring/prometheus-config.yaml -n ${{ env.NAMESPACE }}
-          kubectl apply -f k8s/monitoring/prometheus-deployment.yaml -n ${{ env.NAMESPACE }}
-          kubectl apply -f k8s/monitoring/prometheus-service.yaml -n ${{ env.NAMESPACE }}
-          kubectl apply -f k8s/monitoring/grafana-deployment.yaml -n ${{ env.NAMESPACE }}
-          kubectl apply -f k8s/monitoring/grafana-service.yaml -n ${{ env.NAMESPACE }}
 
-      # 1️⃣1️⃣ Verify Pods & Services
+      #  Verify Pods & Services
       - name: Verify Pods & Services
         run: |
           kubectl get pods -n ${{ env.NAMESPACE }} -o wide
