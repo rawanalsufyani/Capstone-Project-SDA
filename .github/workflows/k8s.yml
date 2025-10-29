@@ -3,7 +3,7 @@ name: 🚀 CD - Deploy to Azure AKS Cluster
 on:
   push:
     branches:
-      - main
+      - k8s-test-ci/cd
     paths:
       - 'k8s'
   workflow_dispatch:
