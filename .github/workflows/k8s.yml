@@ -1,0 +1,95 @@
+name: 🚀 CD - Deploy to Azure AKS Cluster
+ 
+
+on:
+  push:
+    branches:
+      - k8s-test-ci/cd
+  pull_request:
+    branches:
+      - k8s-test-ci/cd
+    paths:
+      - 'k8s'
+  
+
+env:
+  NAMESPACE: app-prod
+
+jobs:
+  deploy:
+    name: Deploy Application to AKS
+    runs-on: ubuntu-latest
+    environment: dev  
+
+    steps:
+      # 1️⃣ Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Azure Login (OIDC)
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+         creds: |
+          {
+           "clientId": "${{ secrets.ARM_CLIENT_ID }}",
+           "clientSecret": "${{ secrets.ARM_CLIENT_SECRET }}",
+           "subscriptionId": "${{ secrets.ARM_SUBSCRIPTION_ID }}",
+           "tenantId": "${{ secrets.ARM_TENANT_ID }}"
+          }
+
+      # 3️⃣ Set AKS Context
+      - name: Get AKS Credentials
+        uses: azure/aks-set-context@v4
+        with:
+          resource-group: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          cluster-name: ${{ secrets.AZURE_AKS_NAME }}
+
+      # 4️⃣ Ensure Namespace Exists
+      - name: Ensure Namespace Exists
+        run: |
+          kubectl get ns ${{ env.NAMESPACE }}
+
+      # 5️⃣ Apply ConfigMaps & Secrets
+      - name: Apply Configs & Secrets
+        run: |
+          kubectl apply -f k8s/backend/configmap.yaml -n ${{ env.NAMESPACE }}
+          kubectl apply -f k8s/backend/secret.yaml -n ${{ env.NAMESPACE }}
+          kubectl apply -f k8s/frontend/configmap.yaml -n ${{ env.NAMESPACE }}
+
+      # 6️⃣ Deploy Backend
+      - name: Deploy Backend
+        run: |
+          kubectl apply -f k8s/backend/deployment.yaml -n ${{ env.NAMESPACE }}
+          kubectl apply -f k8s/backend/service.yaml -n ${{ env.NAMESPACE }}
+          kubectl apply -f k8s/backend/hpa.yaml -n ${{ env.NAMESPACE }}
+          kubectl apply -f k8s/backend/netpol.yaml -n ${{ env.NAMESPACE }}
+          kubectl apply -f k8s/backend/pdb.yaml -n ${{ env.NAMESPACE }}
+
+      # 7️⃣ Deploy Frontend
+      - name: Deploy Frontend
+        run: |
+          kubectl apply -f k8s/frontend/deployment.yaml -n ${{ env.NAMESPACE }}
+          kubectl apply -f k8s/frontend/service.yaml -n ${{ env.NAMESPACE }}
+          kubectl apply -f k8s/frontend/hpa.yaml -n ${{ env.NAMESPACE }}
+
+      # 8️⃣ Force Rollout Restart (Frontend + Backend)
+      - name: Force Rollout Restart
+        run: |
+          kubectl rollout restart deployment/backend -n ${{ env.NAMESPACE }}
+          kubectl rollout restart deployment/frontend -n ${{ env.NAMESPACE }}
+
+      # 9️⃣ Wait for Rollout
+      - name: Wait for Rollouts
+        run: |
+          kubectl rollout status deployment/backend -n ${{ env.NAMESPACE }} --timeout=300s
+          kubectl rollout status deployment/frontend -n ${{ env.NAMESPACE }} --timeout=300s
+
+
+      #  Verify Pods & Services
+      - name: Verify Pods & Services
+        run: |
+          kubectl get pods -n ${{ env.NAMESPACE }} -o wide
+          kubectl get svc -n ${{ env.NAMESPACE }}
+
+     
