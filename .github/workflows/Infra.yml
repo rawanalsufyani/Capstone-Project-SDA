@@ -42,6 +42,10 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Check Azure Subscription Context
+        run: |
+         az account show
+
       - name: Terraform Import RG (only for rg module)
         if: matrix.module == 'rg'
         run: |
